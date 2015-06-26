@@ -1,0 +1,89 @@
+# Link: http://www.codeskulptor.org/#user40_GnnC8zx0Ci_3.py
+
+# Implementation of "Guess the number" mini-project by Fahad Sarfraz :) 
+
+#import libraries
+import simplegui
+import random
+
+
+# Define Global variables
+
+secret_number=0
+upper_limit=100
+remaining_guesses=7
+
+# helper function to start and restart the game
+def new_game():
+
+    global secret_number
+    secret_number= random.randrange(0, upper_limit)
+    print '\nNew Game. Range is from 0 to', upper_limit
+    print 'Number of remaining guesses is', remaining_guesses
+    
+    
+# define event handlers for control panel
+def range100():
+    # button that changes the range to [0,100) and starts a new game 
+    global upper_limit, remaining_guesses
+    upper_limit=100
+    remaining_guesses=7
+    new_game()
+
+
+def range1000():
+    # button that changes the range to [0,1000) and starts a new game     
+    global upper_limit, remaining_guesses
+    upper_limit=1000
+    remaining_guesses=10
+    new_game()
+    
+def input_guess(guess):
+    # main game logic goes here	
+    guess_value= int(guess)
+    print '\nGuess was', guess_value
+    
+    global secret_number, remaining_guesses
+    remaining_guesses-=1
+    
+    if (secret_number==guess_value):
+        print 'Correct!'
+        print 'You win :)'
+
+        if (upper_limit==100):
+            remaining_guesses=7
+        else:
+            remaining_guesses=10        
+        new_game()
+        
+    elif (remaining_guesses==0):
+        print 'Sorry, You have run out of guesses!'
+        print 'The secret number was:', secret_number 
+        if (upper_limit==100):
+            remaining_guesses=7
+        else:
+            remaining_guesses=10        
+        new_game()
+        
+    elif (secret_number>guess_value):
+        print 'Higher'
+        print 'Number of remaining guesses is',remaining_guesses
+    elif (secret_number<guess_value):
+        print 'Lower'      
+        print 'Number of remaining guesses is',remaining_guesses
+
+        
+
+    
+# create frame
+frame = simplegui.create_frame('Guess the Number', 400, 400)
+frame.set_canvas_background('Red')
+
+button0 = frame.add_button('Reset Game', new_game)
+button1 = frame.add_button('Range is [0,100)', range100)
+button2 = frame.add_button('Range is [0,1000)', range1000)
+
+guess = frame.add_input('Enter a Guess', input_guess, 50)
+
+# call new_game 
+new_game()
