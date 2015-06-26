@@ -1,200 +1,107 @@
 # Link: http://www.codeskulptor.org/#user40_JOQ9zhiF7y_5.py
 
-# Implementation of classic arcade game Pong by Fahad Sarfraz
-# Multiplayer Mode: 
-# For player 1 Use 'w' and 's' keys to move the paddle up and down respectively
-# For player 2 Use 'Up' and 'Down' keys to move the paddle up and down respectively
-# Single Player Mode: (Added Functionality)
-# Press the Single Player Mode
+# Implementation of 'Rock-paper-scissors-lizard-Spock' by Fahad Sarfraz
 
-import simplegui
+# The key idea of this program is to equate the strings
+# "rock", "paper", "scissors", "lizard", "Spock" to numbers
+# as follows:
+#
+# 0 - rock
+# 1 - Spock
+# 2 - paper
+# 3 - lizard
+# 4 - scissors
+
+# helper functions
+
 import random
 
-# initialize globals - pos and vel encode vertical info for paddles
-Mode='Multiplayer'
-cpu_Mode=False
-pad_vel=4
-turn=10
+# Define the string to number mapping function 
 
-WIDTH = 600
-HEIGHT = 400       
-BALL_RADIUS = 20
-PAD_WIDTH = 8
-PAD_HEIGHT = 80
-HALF_PAD_WIDTH = PAD_WIDTH / 2
-HALF_PAD_HEIGHT = PAD_HEIGHT / 2
-LEFT = False
-RIGHT = True
-
-paddle1_pos=160
-paddle2_pos=160
-paddle1_vel=0
-paddle2_vel=0
-
-# Set the initial velocity components
-horizontal_vel=0                   
-vertical_vel=0                     
-
-# initialize ball_pos and ball_vel for new bal in middle of table
-ball_pos=[WIDTH/2, HEIGHT/2]
-ball_vel=[horizontal_vel,vertical_vel]
-
-#Initialize scores
-score1=0
-score2=0
-
-# if direction is RIGHT, the ball's velocity is upper right, else upper left
-def spawn_ball(direction):
-    global ball_pos, ball_vel, vertical_vel, horizontal_vel, turn # these are vectors stored as lists
+def name_to_number(name):
     
-    turn=random.randrange(2, 10)
-    
-    ball_pos=[WIDTH/2, HEIGHT/2] 
-    vertical_vel=-random.randrange(1, 3)
-    
-    if (direction==RIGHT):
-        horizontal_vel=abs(horizontal_vel)
-        horizontal_vel= random.randrange(2, 4)
-    elif (direction==LEFT):
-        horizontal_vel=-random.randrange(2, 4)
-        horizontal_vel=-abs(horizontal_vel)
-    ball_vel=[horizontal_vel,vertical_vel]
+        if name == 'rock':
+            return 0 
+        elif name == 'Spock':
+            return 1 
+        elif name == 'paper':
+            return 2 
+        elif name == 'lizard':
+            return 3 
+        elif name == 'scissors':
+            return 4
+        else:
+            return 'Invalid Name'
 
-# define event handlers
-def new_game():
-    global paddle1_pos, paddle2_pos, paddle1_vel, paddle2_vel  # these are numbers
-    global score1, score2  # these are ints
-    paddle1_pos=160
-    paddle2_pos=160
-    score1=0
-    score2=0
-    if (random.randrange(0, 2)):
-        spawn_ball(RIGHT)
+# Define the number to string mapping function
+
+def number_to_name(number):
+
+        if number == 0:
+            return 'rock' 
+        elif number == 1:
+            return 'Spock' 
+        elif number == 2:
+            return 'paper' 
+        elif number == 3:
+            return 'lizard' 
+        elif number == 4:
+            return 'scissors'
+        else:
+            return 'Invalid Number'    
+
+# Define the main function  
+
+def rpsls(player_choice): 
+     
+    # print a blank line to separate consecutive games
+    
+    print " "
+
+    # print out the message for the player's choice
+    
+    print 'Player chooses ' + player_choice
+
+    # convert the player's choice to player_number using the function name_to_number()
+
+    player_number = name_to_number(player_choice)
+ 
+    # compute random guess for comp_number using random.randrange()
+    
+    comp_number = random.randrange(0, 5)
+
+
+    # convert comp_number to comp_choice using the function number_to_name()
+    comp_choice = number_to_name(comp_number)
+    
+    # print out the message for computer's choice
+    print 'Computer chooses ' + comp_choice
+    
+    # compute difference of comp_number and player_number modulo five
+    
+    difference = (comp_number - player_number) % 5
+    
+    # use if/elif/else to determine winner, print winner message
+    
+    if difference == 1 or difference == 2 :
+        print 'Computer Wins!'
+        
+    elif difference == 3 or difference == 4:
+        print 'Player Wins!'
+        
+    elif difference == 0:
+        print 'Player and Computer tie!'
+    
     else:
-        spawn_ball(LEFT)
-        
-def cpu():
-    global cpu_Mode, turn
-    cpu_Mode=True
-    turn=random.randrange(4, 10)
-    new_game()
-
+        print 'Invalid Entry'        
     
-def multiplayer():
-    global cpu_Mode
-    cpu_Mode=False
-    new_game()
     
-def draw(canvas):
-    global score1, score2, paddle1_pos, paddle2_pos, ball_pos, ball_vel, \
-    paddle1_vel, paddle2_vel, vertical_vel, horizontal_vel, cpu_Mode, turn
-    
-    if(cpu_Mode==True):
-        label.set_text('Game Mode: Single Player')
-    else:
-        label.set_text('Game Mode: Multiple Player')
-    
-    # draw mid line and gutters
-    canvas.draw_line([WIDTH / 2, 0],[WIDTH / 2, HEIGHT], 1, "White")
-    canvas.draw_line([PAD_WIDTH, 0],[PAD_WIDTH, HEIGHT], 1, "White")
-    canvas.draw_line([WIDTH - PAD_WIDTH, 0],[WIDTH - PAD_WIDTH, HEIGHT], 1, "White")
-        
+# Test Run
+rpsls("rock")
+rpsls("Spock")
+rpsls("paper")
+rpsls("lizard")
+rpsls("scissors")
 
-    #Handle the Up and Down side wall relection and collision of ball        
-    if (ball_pos[1]<= BALL_RADIUS):
-        ball_vel[1]=-ball_vel[1]
-    
-    elif (ball_pos[1]>= HEIGHT - BALL_RADIUS):
-        ball_vel[1]=-ball_vel[1]        
-        
-    # update ball     
-    ball_pos[0]+=ball_vel[0]        
-    ball_pos[1]+=ball_vel[1]
-    
-    # draw ball
-    canvas.draw_circle(ball_pos, BALL_RADIUS, 1, 'White', 'White')
-    
-    # update paddle's vertical position, keep paddle on the screen    
+# Looking forward to your suggestions and programming tips :) 
 
-    
-    if(paddle1_pos+paddle1_vel>=0 and paddle1_pos+paddle1_vel<=HEIGHT-PAD_HEIGHT):
-        paddle1_pos+=paddle1_vel
-
-    if (cpu_Mode==True):
-        if (turn>=0):
-            paddle2_pos=ball_pos[1]-40
-        else:
-            paddle2_pos=ball_pos[1]+40    
-
-    elif(paddle2_pos+paddle2_vel>=0 and paddle2_pos+paddle2_vel<=HEIGHT-PAD_HEIGHT):    
-        paddle2_pos+=paddle2_vel
-    
-    # draw paddles
-    canvas.draw_line((0, paddle1_pos), (0, paddle1_pos + PAD_HEIGHT),16, 'White')           
-    canvas.draw_line((WIDTH-1, paddle2_pos), (WIDTH-1, paddle2_pos+PAD_HEIGHT),16, 'White')
-    
-    # determine whether paddle and ball collide    
-    if (ball_pos[0]<=PAD_WIDTH + BALL_RADIUS):
-        if(paddle1_pos <= ball_pos[1] <= paddle1_pos + PAD_HEIGHT):
-            ball_vel[0]*=1.10
-            ball_vel[1]*=1.10
-            ball_vel[0]=-ball_vel[0]
-        else:
-            spawn_ball(RIGHT)
-            score2+=1
-    
-    elif (ball_pos[0]>= WIDTH-PAD_WIDTH - BALL_RADIUS):
-        if(paddle2_pos <= ball_pos[1] <= paddle2_pos + PAD_HEIGHT):
-            ball_vel[0]*=1.10
-            ball_vel[1]*=1.10
-            ball_vel[0]=-ball_vel[0]
-            turn-=1
-        else:
-            spawn_ball(LEFT)
-            score1+=1
-    # draw scores
-    canvas.draw_text(str(score1), (150, 50), 40, 'Yellow')
-    canvas.draw_text(str(score2), (450, 50), 40, 'Yellow')
-    
-def keydown(key):
-    global paddle1_vel, paddle2_vel
-
-    if key==simplegui.KEY_MAP['w']: 
-        paddle1_vel=-pad_vel
-    elif key==simplegui.KEY_MAP['s']: 
-        paddle1_vel=pad_vel        
-    elif key==simplegui.KEY_MAP['up']:
-        paddle2_vel=-pad_vel
-    elif key==simplegui.KEY_MAP['down']:
-        paddle2_vel=pad_vel
-
-        
-def keyup(key):
-    global paddle1_vel, paddle2_vel
-    if key==simplegui.KEY_MAP['w']: 
-        paddle1_vel=0
-    elif key==simplegui.KEY_MAP['s']: 
-        paddle1_vel=0        
-    elif key==simplegui.KEY_MAP['up']:
-        paddle2_vel=0
-    elif key==simplegui.KEY_MAP['down']:
-        paddle2_vel=0
-
-
-# create frame
-frame = simplegui.create_frame("Pong", WIDTH, HEIGHT)
-frame.set_canvas_background('Green')
-frame.set_draw_handler(draw)
-frame.set_keydown_handler(keydown)
-frame.set_keyup_handler(keyup)
-frame.add_button('Restart', new_game,120)
-
-frame.add_button('Multiplayer', multiplayer,120)
-frame.add_button('Single Player', cpu ,120)
-label = frame.add_label('Label')
-
-label.set_text('Game Mode:' + Mode )
-
-# start frame
-new_game()
-frame.start()
