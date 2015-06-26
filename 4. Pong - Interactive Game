@@ -122,10 +122,15 @@ def draw(canvas):
         paddle1_pos+=paddle1_vel
 
     if (cpu_Mode==True):
-        if (turn>=0):
+        if (ball_pos[1]<=40):
+            paddle2_pos=0
+        elif (ball_pos[1]>=HEIGHT-40):
+            paddle2_pos=320       
+        elif (turn>=0):
             paddle2_pos=ball_pos[1]-40
-        else:
-            paddle2_pos=ball_pos[1]+40    
+        else: 
+            paddle2_pos=ball_pos[1]+40  
+
 
     elif(paddle2_pos+paddle2_vel>=0 and paddle2_pos+paddle2_vel<=HEIGHT-PAD_HEIGHT):    
         paddle2_pos+=paddle2_vel
